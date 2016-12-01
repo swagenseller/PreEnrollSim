@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<style>
+body{
+    background-color: #E6E6E6;
+}
+
+p{
+    text-indent: 40px;
+}
+.bar{
+    fill: steelblue;
+    fill-opacity: .9;
+}
+
+.axis text{
+    font: Times;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.tooltip {
+        position: absolute;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+}
+
+.tooltip.hidden {
+        display: none;
+}
+
+</style>
+
+ <body>    
+    <script type= "text/javascript" src="https://d3js.org/d3.v3.min.js"></script> 
+     <label><input type="checkbox"> Sort values</label>  
+    <!--  ///////////////////////////////////////// -->
+    <div id="tooltip" class="hidden">
+        
+     </div>
+<!--  ///////////////////////////////////////// -->
+       <div class="page-header">
+           <h1><center>Fall 2016 Enrollment data</center></h1>
+           
+      </div>
+      <p><center>Enrollment data for Computer Science classes of Fall 2016. Compares the most enrolled class to the least enrolled class.</center></p>
+<script>  
+      var margin = {top: 10, right: 40, bottom: 150, left: 50},
+    width = 760 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+    
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+var xScale = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0.1);
+
+var yScale = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom");
+//added tick marks to the y-axis and implements the "$" sign
+var yAxis = d3.svg.axis() 
+    .scale(yScale)
+    .orient("left")
+    .ticks(8);
+
+
+d3.csv("Fall2016EnrollmentTotal.csv",function(error, data){
+    data.forEach(function(d) {
+        d.key = d.key;
+        d.value = +d.value;
+    });
+
+    
+    
+    xScale.domain(data.map(function(d){ return d.key; }));
+    yScale.domain([0,d3.max(data, function(d) {return d.value; })]);
+    
+    
+    
+        //top labels    
+    
+   
+/*      svg.selectAll("text")
+			   .data(data)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {
+			   		return d.value;
+			   })
+			   .attr("text-anchor", "middle")
+			   .attr("x", function(d, i) {
+			   		return i * (width / data.length) + 30 ;
+			   })
+			   .attr("y", function(d) {
+			   		return yScale(d.value)-20;
+			   })
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "11px")
+			   .attr("fill", "black");
+  */  
+    
+    //xAxis labels
+    
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("dx", " -.8em")
+        .attr("dy", ".50em")
+        .style("text-anchor", "middle")
+        .attr("font-size", "10px")
+        //.attr("transform", function(d) {return "rotate(-60)"});
+        
+    
+    
+    svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(0,0)")
+        .call(yAxis);
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0-(height/2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Total Enrolled Students per class");     
+    
+    
+    
+    ////////////////////////////////////////////////////////////////
+    
+    svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return xScale(d.key); })
+      .attr("width", xScale.rangeBand())
+      .attr("y", function(d) { return yScale(d.value); })
+      .attr("height", function(d) { return height - yScale(d.value); });
+    
+    
+    
+    
+    d3.select("input").on("change", change);
+
+  var sortTimeout = setTimeout(function() {
+    d3.select("input").property("checked", true).each(change);
+  }, 2000);
+
+  function change() {
+    clearTimeout(sortTimeout);
+
+    var x0 = xScale.domain(data.sort(this.checked
+        ? function(a, b) { return b.value - a.value; }
+        : function(a, b) { return d3.ascending(a.key, b.key); })
+        .map(function(d) { return d.key; }))
+        .copy();
+
+    svg.selectAll(".bar")
+        .sort(function(a, b) { return x0(a.key) - x0(b.key); });
+
+    var transition = svg.transition().duration(750),
+        delay = function(d, i) { return i * 50; };
+
+    transition.selectAll(".bar")
+        .delay(delay)
+        .attr("x", function(d) { return x0(d.key); });
+
+    transition.select(".x.axis")
+        .call(xAxis)
+      .selectAll("g")
+        .delay(delay);
+  }
+        
+});
+    
+       
+     </script>      
+       <div class='row'>
+        <div id="footer">
+          <div class="container">
+            <div class="row-1">
+              <h3> Created by: </h3>
+                  Jeff Wagenseller and Zach Reisenfeld <br>
+
+              <h3>Created for: </h3> CMPS165, Data Programming for Visualization, Fall 2016
+            </div><!--/col-sm-3-->
+            <br>
+            <div class="col-sm-3">
+      
+      
