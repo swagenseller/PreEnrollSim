@@ -3,19 +3,7 @@
 body{
     background-color: #E6E6E6;
 }   
-.button {
-    background-color: steelblue; 
-    border: none;
-    border-radius: 4px;
-    color: black;
-    padding: 12px 28px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 2px 2px;
-    cursor: pointer;
-}    
+  
  
 p{
     text-indent: 40px;
@@ -63,23 +51,22 @@ p{
      <h1><center>Pre-Enrollment Simulation</center></h1>  
      <h2><center>Computer Science UCSC classes</center></h2>
      <h3><center> Spring 2017</center></h3>  
-   <!--   </div> -->
       <p><center>Simulation for expected enrollment of all Computer Science classes for Spring 2017 at UCSC. Large influxes of computer science majors over the past couple of years has caused extreme demand for Computer Science courses. </center></p>
      
     <script type= "text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
     <span style="display: inline;"> 
-<!--    <label><input type="checkbox">Toggle Alphabetically/Total</label>   
-    <button class="button"onclick = "empty()">Load New Year</button>
-    <input class="button" type = "button" value ="Reload Previous Year" onclick = "location.reload();" />    
-    -->
+
      </span>
     <div id="tooltip" class="hidden">        
     </div>
      <p>Sign up for at most 3 CMPS Classes for Spring 2017 below:</p>
      <span style="display: inline;">
-     <div class="page-header">
+     <!-- The follwoing div class page header creates dropdown menus for our classes -->
+         <div class="page-header">
+             
          Student ID #: <input type="text" name="FirstName" >
-        <select name="my_menu1" id = "my_menu1" size="1">
+        <!-- drop menu 1-->
+             <select name="my_menu1" id = "my_menu1" size="1">
                 <option value="NA">NA</option>
                 <option value="CMPS111">CMPS111</option>   
                 <option value="CMPS11">CMPS11</option>
@@ -94,6 +81,7 @@ p{
                 <option value="CMPS5J">CMPS5J</option>
                 <option value="CMPS5P">CMPS5P</option>
             </select>
+        <!-- drop menu 2-->     
         <select name="my_menu2" id = "my_menu2" size="1">
                 <option value="NA">NA</option>
                 <option value="CMPS111">CMPS111</option>   
@@ -109,6 +97,7 @@ p{
                 <option value="CMPS5J">CMPS5J</option>
                 <option value="CMPS5P">CMPS5P</option>
             </select>
+        <!-- drop menu 3-->     
         <select name="my_menu3" id = "my_menu3" size="1">
                 <option value="NA">NA</option>
                 <option value="CMPS111">CMPS111</option>   
@@ -123,7 +112,8 @@ p{
                 <option value="CMPS130">CMPS130</option>
                 <option value="CMPS5J">CMPS5J</option>
                 <option value="CMPS5P">CMPS5P</option>
-            </select> 
+            </select>
+            <!-- add student button --> 
          <button onclick = "increment()">Add Student!</button>
          </div>   </span>      
 <p>
@@ -165,7 +155,7 @@ var yAxis = d3.svg.axis()
 var div = d3.select("body").append("bar")  
     .attr("class", "tooltip")              
     .style("opacity", 0);
- 
+ // loads csv of the incomplete editable data
 d3.csv("SpringInterSim.csv",function(error, data){
     data.forEach(function(d) {
         d.key = d.key;
@@ -175,8 +165,8 @@ d3.csv("SpringInterSim.csv",function(error, data){
     xScale.domain(data.map(function(d){ return d.key; }));
     yScale.domain([0,d3.max(data, function(d) {return d.value; })]);
    
-    //xAxis labels
-   
+    
+   // forms the x axis 
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -192,7 +182,8 @@ d3.csv("SpringInterSim.csv",function(error, data){
        .attr("dx", "1em")
        .style("text-anchor", "right")
        .text("Courses");
-          
+    
+    // Y axis and its labels
     svg.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(0,0)")
@@ -205,7 +196,7 @@ d3.csv("SpringInterSim.csv",function(error, data){
         .style("text-anchor", "middle")
         .text("Total Pre-Enrolled Students");    
    
-   
+   // generates the bars 
     svg.selectAll(".bar")
       .data(data)
     .enter().append("rect")
@@ -214,12 +205,13 @@ d3.csv("SpringInterSim.csv",function(error, data){
       .attr("width", xScale.rangeBand() -15)
       .attr("y", function(d) { return yScale(d.value); })
       .attr("height", function(d) { return height - yScale(d.value); })
-      //tool tip
+      //tool tip for each bar
       .on("mouseover", function(d) {      
            div.transition()      
               .duration(200)    
               .style("opacity", .9);    
-           div.html( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + d.key + " <br/>  # of students &nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " + d.value )
+        // &nbsp creates white space for our tool tips to gibe them better format   
+        div.html( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + d.key + " <br/>  # of students &nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " + d.value )
                .style("left", (d3.event.pageX+20) + "px")    
                .style("top", (d3.event.pageY - 28) + "px");  
         //Show the tooltip
@@ -239,7 +231,7 @@ d3.csv("SpringInterSim.csv",function(error, data){
     // Select the section we want to apply our changes to
     var svg = d3.select("body").transition();
  
-    // Make the changes
+    // Make the changes to our axises
        
         svg.select(".x.axis") // change the x axis
             .duration(750)
@@ -250,19 +242,22 @@ d3.csv("SpringInterSim.csv",function(error, data){
   //  
 }
      window.increment = function() {
+         // creates variables for comparison later
         var dropdown1 = document.getElementById("my_menu1");
          var value1 = dropdown1.options[dropdown1.selectedIndex].value;
          var dropdown2 = document.getElementById("my_menu2");
          var value2 = dropdown2.options[dropdown2.selectedIndex].value;
          var dropdown3 = document.getElementById("my_menu3");
          var value3 = dropdown3.options[dropdown3.selectedIndex].value;
-        console.log(data);
+         // checks whether the selected course is in the csv 
+         // then increments the value if it is
          data.forEach(function(d){
          if(d.key == value1) {
             d.value+=+1;
         }
         })
-        
+        // if the values of value2 or value3 match any others
+         // it will not increment if a same class is selected
          data.forEach(function(d){
          if(d.key == value2 && value1 != value2) {
             d.value+=+1;
@@ -274,11 +269,12 @@ d3.csv("SpringInterSim.csv",function(error, data){
             d.value+=+1;
         }
         })
-         console.log(data);
+    
     
         xScale.domain(data.map(function(d){ return d.key; }));
         yScale.domain([0,d3.max(data, function(d) {return d.value; })]);
-        svg.selectAll(".bar").remove();
+        // removes bars before redrawing the updated ones
+         svg.selectAll(".bar").remove();
         svg.selectAll(".bar")
            .data(data)
         .enter().append("rect")
@@ -318,7 +314,9 @@ window.empty = function() {
     xScale.domain(data.map(function(d){ return d.key; }));
     yScale.domain([0,d3.max(data, function(d) {return d.value; })]);
     */
-////////////    ///////////////////////////////////////
+    
+    // loads separate csv with completed simulation data
+    // the rest is pretty much copy and paste
     d3.csv("SpringSimulation2017.csv",function(error, data){
     data.forEach(function(d) {
         d.key = d.key;
@@ -357,10 +355,9 @@ window.empty = function() {
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("Total Pre-Enrolled Students"); 
-////////////////////////////////////////////////////////////////////////    
+    
         svg.selectAll(".bar").remove();
     d3.svg
-    
     svg.selectAll(".bar")
       .data(data)
    .enter().append("rect")
@@ -388,69 +385,13 @@ window.empty = function() {
            
        }); }
 
-window.increment = function() {
-        var dropdown1 = document.getElementById("my_menu1");
-         var value1 = dropdown1.options[dropdown1.selectedIndex].value;
-         var dropdown2 = document.getElementById("my_menu2");
-         var value2 = dropdown2.options[dropdown2.selectedIndex].value;
-         var dropdown3 = document.getElementById("my_menu3");
-         var value3 = dropdown3.options[dropdown3.selectedIndex].value;
-        console.log(data);
-         data.forEach(function(d){
-         if(d.key == value1) {
-            d.value+=+1;
-        }
-        })
-        
-         data.forEach(function(d){
-         if(d.key == value2 && value1 != value2) {
-            d.value+=+1;
-        }
-        })
-        
-         data.forEach(function(d){
-         if(d.key == value3 && value2 != value3 && value1 != value3) {
-            d.value+=+1;
-        }
-        })
-         console.log(data);
-    
-        xScale.domain(data.map(function(d){ return d.key; }));
-        yScale.domain([0,d3.max(data, function(d) {return d.value; })]);
-        svg.selectAll(".bar").remove();
-        svg.selectAll(".bar")
-           .data(data)
-        .enter().append("rect")
-           .attr("class", "bar")
-           .attr("x", function(d) { return xScale(d.key); })
-           .attr("width", xScale.rangeBand() - 15)
-           .attr("y", function(d) { return yScale(d.value); })
-           .attr("height", function(d) { return height - yScale(d.value); })
-           .on("mouseover", function(d) {      
-           
-        div.transition()      
-           .duration(200)    
-           .style("opacity", .9);    
-        div.html( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + d.key + " <br/>  # of students &nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " + d.value )
-                .style("left", (d3.event.pageX+20) + "px")    
-                .style("top", (d3.event.pageY - 28) + "px");  
-               
-       //Show the tooltip
-        d3.select(".tooltip").classed("hidden", false);
-        })                
-        .on("mouseout", function() {
-        //Hide the tooltip
-        d3.select(".tooltip").classed("hidden", true);
- 
-        });
-        updateData();    
- 
-    }
+
     ////////////////////////   
 });
        
      </script> 
      <body>
+         <!-- loading simulation data-->
          <div class ='row'>
         <div id ="footer">
             <input type = "button" value ="Load Sim1" onclick = "location.reload();" />
@@ -458,13 +399,12 @@ window.increment = function() {
              </div>
          </div>
      </body>
-<!--    <input class="button" type = "button" value ="Load Sim1" onclick = "location.reload();" />    
-        
-    <!-- </span> -->
+
      <br>
      <br>
      <br>
      <br>
+     <!-- the following is just the sources and created information -->
        <div class='row'>
         <div id="footer">
           <div class="container">
