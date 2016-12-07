@@ -3,8 +3,21 @@
 body{
     background-color: #E6E6E6;
 }
+/* {
+    margin: 0; padding: 0; box-sizing: border-box; 
+}
+html, body {
+    width: 100%; 
+}
+.container {
+    width: 100%
+}
+button {
+    width: 50%; 
+}    
+*/    
 .button {
-    background-color: steelblue;
+    background-color: steelblue; 
     border: none;
     border-radius: 4px;
     color: black;
@@ -60,7 +73,7 @@ p{
 </style>
  
  <body>
-    <button class="button" onclick = "increment101()">Increment</button>
+ <!--   <button class="button" onclick = "increment101()">Increment</button>
     <button class="button"onclick = "empty()">Empty Csv</button>
      
     <script type= "text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
@@ -108,14 +121,68 @@ p{
                 <option value="CMPS130">CMPS130</option>
             </select>
        
+       -->
+           <h1><center>Pre-Enrollment Simulation</center></h1>      
+   <!--   </div> -->
+      <p><center>Simulation for expected enrollment of select Computer Science and Computer Engineering classes for Spring 2017 at UCSC. The graph can be toggled between data sorted alphabetically or by total amount of enrolled students. You can add students by clicking add new student and slelcting classes from the following drop down menu.  Additionally, you can click between reloading the original data or start with an empty set of data. </center></p>
+<!--    <button class="button" onclick = "increment()">Increment</button> -->
+    <button class="button"onclick = "empty()">Load Empty Csv</button>
+     
+    <script type= "text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <label><input type="checkbox">Toggle Alphabetically/Total</label>  
+      
+    <div id="tooltip" class="hidden">        
+    </div>
+    <input class="button" type = "button" value ="Reload Simulation Data" onclick = "location.reload();" />
+    <button onclick = "increment()">Add Student:</button>
+     <div class="page-header">
        
-           <h1><center>Fall 2016 Enrollment data</center></h1>      
-      </div>
-      <p><center>Enrollment data for Computer Science classes of Fall 2016. Compares the most enrolled class to the least enrolled class.</center></p>
+        <select name="my_menu1" id = "my_menu1" size="1">
+                <option value="CMPE107">CMPE107</option>   
+                <option value="CMPE12">CMPE12</option>
+                <option value="CMPE16">CMPE16</option>
+                <option value="CMPS101">CMPS101</option>
+                <option value="CMPS102">CMPS102</option>
+                <option value="CMPS104A">CMPS104A</option>
+                <option value="CMPS112">CMPS112</option>
+                <option value="CMPS12A">CMPS12A</option>
+                <option value="CMPS12B">CMPS12B</option>
+                <option value="CMPS130">CMPS130</option>
+            </select>
+        <select name="my_menu2" id = "my_menu2" size="1">
+                <option value="CMPE107">CMPE107</option>   
+                <option value="CMPE12">CMPE12</option>
+                <option value="CMPE16">CMPE16</option>
+                <option value="CMPS101">CMPS101</option>
+                <option value="CMPS102">CMPS102</option>
+                <option value="CMPS104A">CMPS104A</option>
+                <option value="CMPS112">CMPS112</option>
+                <option value="CMPS12A">CMPS12A</option>
+                <option value="CMPS12B">CMPS12B</option>
+                <option value="CMPS130">CMPS130</option>
+            </select>
+        <select name="my_menu3" id = "my_menu3" size="1">
+                <option value="CMPE107">CMPE107</option>   
+                <option value="CMPE12">CMPE12</option>
+                <option value="CMPE16">CMPE16</option>
+                <option value="CMPS101">CMPS101</option>
+                <option value="CMPS102">CMPS102</option>
+                <option value="CMPS104A">CMPS104A</option>
+                <option value="CMPS112">CMPS112</option>
+                <option value="CMPS12A">CMPS12A</option>
+                <option value="CMPS12B">CMPS12B</option>
+                <option value="CMPS130">CMPS130</option>
+            </select> 
+</div>
+<p>
+    
+    
+    
+     </p>     
 <script>  
      
 var margin = {top: 10, right: 40, bottom: 150, left: 50},
-    width = 860 - margin.left - margin.right,  //760
+    width = 800 - margin.left - margin.right,  //760
     height = 500 - margin.top - margin.bottom;
    
  
@@ -254,7 +321,7 @@ d3.csv("Fall2016EnrollmentTotal.csv",function(error, data){
 }
  
       
-     window.increment101 = function() {
+     window.increment = function() {
         var dropdown1 = document.getElementById("my_menu1");
          var value1 = dropdown1.options[dropdown1.selectedIndex].value;
          var dropdown2 = document.getElementById("my_menu2");
